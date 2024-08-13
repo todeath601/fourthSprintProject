@@ -53,9 +53,9 @@ func ShowTrainingInfo(action int, trainingType string, duration, weight, height 
 		calories := RunningSpentCalories(action, weight, duration) // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Ходьба":
-		distance := distance(action)                                       // вызовите здесь необходимую функцию
-		speed := meanSpeed(action, duration)                               // вызовите здесь необходимую функцию
-		calories := WalkingSpentCalories(action, duration, weight, height) // вызовите здесь необходимую функцию
+		distance := distance(action)                                           // вызовите здесь необходимую функцию
+		speed := meanSpeed(action, duration)                                   // вызовите здесь необходимую функцию
+		calories := WalkingSpentCalories(action, duration, weight, height) / 2 // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Плавание":
 		distance := distance(action)                                               // вызовите здесь необходимую функцию
@@ -103,12 +103,11 @@ const (
 // height float64 — рост пользователя.
 func WalkingSpentCalories(action int, duration, weight, height float64) float64 {
 	// ваш код здесь
-	//((0.035 * ВесСпортсменаВКг + (СредняяСкоростьВМетрахВСекунду**2 / РостВМетрах)* 0.029 * ВесСпортсменаВКг) * ВремяТренировкиВЧасах * minInH)
-	return ((walkingCaloriesWeightMultiplier*weight + ((math.Pow(meanSpeed(action, duration), 2)/height)*kmhInMsec)*walkingSpeedHeightMultiplier*weight) * (duration * minInH))
-	//return (walkingCaloriesWeightMultiplier*weight + ((math.Pow(meanSpeed(action, duration), 2)/height)*walkingSpeedHeightMultiplier*weight)*duration*minInH)
-	//return (walkingCaloriesWeightMultiplier*weight + (math.Pow(meanSpeed(action, duration), kmhInMsec))/(height/cmInM)*walkingSpeedHeightMultiplier) * duration * minInH
+	// speedMsec := meanSpeed(action, duration) * kmhInMsec
 
-	////   return (walkingCaloriesWeightMultiplier*weight + (speed*kmhInMsec)*(speed*kmhInMsec)/(height/cmInM)*walkingSpeedHeightMultiplier) * duration * minInH
+	//((0.035 * ВесСпортсменаВКг + (СредняяСкоростьВМетрахВСекунду**2 / РостВМетрах)* 0.029 * ВесСпортсменаВКг) * ВремяТренировкиВЧасах * minInH)
+	return ((walkingCaloriesWeightMultiplier*weight + (math.Pow(meanSpeed(action, duration), 2)*kmhInMsec)/height) * walkingSpeedHeightMultiplier * weight) * duration * minInH
+	// return (walkingCaloriesWeightMultiplier*(weight) + (math.Pow(speedMsec, 2)/height)*walkingSpeedHeightMultiplier*weight) * duration * minInH
 }
 
 // Константы для расчета калорий, расходуемых при плавании.
